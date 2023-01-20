@@ -1,0 +1,8 @@
+{
+  "admin": {
+    "username": "admin",
+    "id": 0,
+    "password": "Admin100",
+    "cart": []
+  }
+}

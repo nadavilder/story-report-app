@@ -1,6 +1,11 @@
 const products = require("./products.json");
-let users = require("./users.json");
-let logs = require("./logs.json");
+const users = require("./users.json");
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const app = express();
+const port = process.env.PORT || 5000;
+const fs = require("fs");
 
 function get_last_user_id(users) {
   let last_user = users[Object.keys(users)[Object.keys(users).length - 1]];
@@ -14,12 +19,6 @@ function get_last_product_id(products) {
 
 let user_id = get_last_user_id(users);
 let product_id = get_last_product_id(products);
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const app = express();
-const port = process.env.PORT || 5000;
-const fs = require("fs");
 
 app.use(
   express.urlencoded({
@@ -214,30 +213,6 @@ app.post("/api/emptyCart", async (req, res) => {
 });
 
 /*
-get all logs
- */
-app.get("/api/getAllLogs", async (req, res) => {
-  res.send(JSON.stringify(logs));
-});
-
-/*
-add new log
- */
-app.get("/api/addNewLog", async (req, res) => {
-  let userName = req.query.userName;
-  console.log("userName", userName);
-  let action = req.query.action;
-
-  if (users[userName] === null) {
-    res.send("user doesn't exist");
-  } else {
-    let newLog = { username: userName, action: action, time: new Date() };
-    save_log(newLog);
-    res.send({});
-  }
-});
-
-/*
 add new product, only can be done by admin user
  */
 app.post("/api/addNewProduct", async (req, res) => {
@@ -367,12 +342,6 @@ function save_product(product) {
   products.push(product);
   fs.writeFileSync("products.json", JSON.stringify(products, null, 2));
 }
-/*
-save log in db
- */
-function save_log(log) {
-  logs.push(log);
-  fs.writeFileSync("logs.json", JSON.stringify(logs, null, 2));
-}
+
 // This displays message that the server running and listening to specified port
 app.listen(port, () => console.log(`Listening on port ${port}`));
